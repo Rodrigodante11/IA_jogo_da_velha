@@ -17,14 +17,57 @@ from sklearn.linear_model import Perceptron
 
 df_tic_tac_toe = pd.read_csv("tic-tac-toe.csv")  # Lendo o arquivo csv e armazendano em um dataframe
 
+"""# Nova secção"""
+
 df_tic_tac_toe.isna().any() # verificando campo vazio que pode quebrar o sistema
 
 df_tic_tac_toe.head() # vendo como estapo os dados
 
-df_tic_tac_toe.replace({'o' :-1 , 'b' : 0 , 'x': 1 , 'positivo' : 1 , 'negativo':-1 }) # Replace tudo para numero
+# Replace tudo para numero
+df_tic_tac_toe.replace({'o' :-1 , 'b' : 0 , 'x': 1 , 'positivo' : 1 , 'negativo':-1 }, inplace=True)
 
-def sklearn_to_df(sklearn_dataset):
-  df = pd.DataFrame(sklearn_dataset.data, columns=sklearn_dataset.feature_names)
-  df["target"] = pd.Series(sklearn_dataset.target)
+# Separação dos dados de entrada e saida 
+saida = df_tic_tac_toe['resultado']
+entrada = df_tic_tac_toe.drop(columns ='resultado')
 
-  return df
+from sklearn.model_selection import train_test_split #serve para dividir os dados em train e test
+
+# test_size=0.2 = 20¨%
+# x = entrada , y = saida
+x_train, x_test, y_train, y_test = train_test_split(entrada, saida, test_size=0.2)
+
+from sklearn.naive_bayes import GaussianNB #algoritmo que utilizei para classificação dos dados
+#Modelo escolhido e utilizado é o Naive Bayes
+model = GaussianNB()
+
+#Treinando o modelo
+model.fit(x_train, y_train)
+
+#Prevendo a resposta para os dados de teste
+y_pred = model.predict(x_test)
+
+#Métrica de avaliação do modelo
+from sklearn.metrics import classification_report
+classification_report(y_test, y_pred)
+
+type(x_test[:1])
+
+x_test[:1]
+
+x = [-1, 0,	1, 1,	0,1,-1,	-1,	1]
+x_input = pd.DataFrame(x)
+type(x_input)
+
+x_input
+
+x_input.transpose()
+
+#Prevendo a resposta para os dados de teste
+
+y_user_pred = model.predict(x_input.transpose())
+
+if int(y_user_pred[0]) == 0:
+    print("Vitoria de X: SIM ")
+else:
+    print("Vitoria de X: NÃO ")
+
