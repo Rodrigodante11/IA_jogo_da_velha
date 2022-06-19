@@ -21,7 +21,7 @@ df_tic_tac_toe = pd.read_csv("tic-tac-toe.csv")  # Lendo o arquivo csv e armazen
 
 df_tic_tac_toe.isna().any() # verificando campo vazio que pode quebrar o sistema
 
-df_tic_tac_toe.head() # vendo como estapo os dados
+df_tic_tac_toe.head() # vendo como esta os dados
 
 # Replace tudo para numero
 df_tic_tac_toe.replace({'o' :-1 , 'b' : 0 , 'x': 1 , 'positivo' : 1 , 'negativo':-1 }, inplace=True)
@@ -33,7 +33,6 @@ entrada = df_tic_tac_toe.drop(columns ='resultado')
 from sklearn.model_selection import train_test_split #serve para dividir os dados em train e test
 
 # test_size=0.2 = 20¨%
-# x = entrada , y = saida
 x_train, x_test, y_train, y_test = train_test_split(entrada, saida, test_size=0.2)
 
 from sklearn.naive_bayes import GaussianNB #algoritmo que utilizei para classificação dos dados
@@ -50,24 +49,44 @@ y_pred = model.predict(x_test)
 from sklearn.metrics import classification_report
 classification_report(y_test, y_pred)
 
-type(x_test[:1])
+# Valores de entrada para usuario 
+lista = []
+for num in range(9):
 
-x_test[:1]
+  try:
+    print("Digite a posicao : "+ str(num+1))
+    lista.append(int(input())) # se digitar valor diferente de int o cast para int ira gerar uma excessao 
+  except:
+    print("Error: Digite um valor Valido !")
+    break
 
-x = [-1, 0,	1, 1,	0,1,-1,	-1,	1]
-x_input = pd.DataFrame(x)
-type(x_input)
 
-x_input
+filtrados = [x for x in lista if x > 1 or x < -1] # pegando valores diferentes dos validos ( -1, 0 , 1 )
+if (len(filtrados) ==0 ): # verificando se existe valor diferentes dos validos ( -1, 0 , 1 )
+  x_input = pd.DataFrame(lista) # convertendo a lista em pandas dataframe 
+else:
+  print("Error: valores diferentes de -1, 0 , 1 foi inserido ")
 
-x_input.transpose()
+# x = [-1, 1,	1, 0,	-1, 0, 1,	0,	-1] # NAO -1vitoria d X
+# x = [1, 1,	1, 0,	-1, 0, 1,	-1,	-1] # vitoria d X
+
+a = x_input.transpose()
+b = a.replace({-1 :'O' , 1 : 'X' , 0 : 'B' }, inplace=True)
+
+print("|  " + a[0][0] + "  " + a[1][0] + "  " + a[2][0] + " | ")
+print("|  " + a[3][0] + "  " + a[4][0] + "  " + a[5][0] + " | ")
+print("|  " + a[6][0] + "  " + a[7][0] + "  " + a[8][0] + " | ")
 
 #Prevendo a resposta para os dados de teste
 
 y_user_pred = model.predict(x_input.transpose())
 
-if int(y_user_pred[0]) == 0:
-    print("Vitoria de X: SIM ")
-else:
-    print("Vitoria de X: NÃO ")
+print("Vitoria de X: "+ str(y_user_pred[0] == 1))
+print()
+print()
+print()
+# if int(y_user_pred[0]) == 1:
+#     print("Vitoria de X")
+# else:
+#     print("Vitoria de O")
 
